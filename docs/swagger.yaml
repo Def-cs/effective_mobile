@@ -1,0 +1,185 @@
+basePath: /
+definitions:
+  dto.SongRequest:
+    properties:
+      group:
+        type: string
+      link:
+        type: string
+      release_date:
+        type: string
+      song:
+        type: string
+      text:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact:
+    email: vfrolov2004@gmail.com
+    name: Frolov Vladislav
+    url: https://hh.ru/resume/7b5e19efff0c43b3390039ed1f4e5a635a4558
+  description: API для управления песнями.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: Songs API
+  version: "1.0"
+paths:
+  /delete/{id}:
+    delete:
+      description: Удаляет песню из базы данных
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Успешное удаление
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Песня не найдена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Удалить песню
+      tags:
+      - Songs
+  /songs:
+    get:
+      description: Возвращает все песни с фильтрацией
+      parameters:
+      - description: Название группы
+        in: query
+        name: group
+        type: string
+      - description: Начальная дата (yyyy-mm-dd)
+        in: query
+        name: release_date_start
+        type: string
+      - description: Конечная дата (yyyy-mm-dd)
+        in: query
+        name: release_date_end
+        type: string
+      - description: Номер страницы пагинации
+        in: query
+        name: page
+        type: integer
+      - description: Название песни
+        in: query
+        name: song
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.SongRequest'
+            type: array
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Список всех песен
+      tags:
+      - Songs
+    post:
+      consumes:
+      - application/json
+      description: Добавляет песню в базу данных
+      parameters:
+      - description: Информация о песне
+        in: body
+        name: song
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SongRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Успешное создание
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Ошибка запроса
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Создать новую песню
+      tags:
+      - Songs
+  /songs/{id}:
+    get:
+      description: Возвращает песню по ID
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SongRequest'
+        "404":
+          description: Песня не найдена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить песню по ID
+      tags:
+      - Songs
+  /update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Обновляет данные о песне в базе
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Обновленная информация о песне
+        in: body
+        name: song
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SongRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Песня не найдена
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Обновить песню
+      tags:
+      - Songs
+swagger: "2.0"
